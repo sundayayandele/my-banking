@@ -8,7 +8,7 @@
   <link rel="shortcut icon" href="images/mybank-favicon-icon.png" type="image/png">
   <link rel="stylesheet" href="style.css">
 </head>
-<body id="home">
+<body>
   <nav>
     <div id="brand">
       <a href="index.html">
@@ -24,12 +24,12 @@
       </button>
     </div>
     <div class="navbar">
-      <a href="#home">Home</a>
-      <a href="#customers">Customers</a>
-      <a href="#transactions">Transactions</a>
-      <a href="#new-transaction">New Transaction</a>
-      <a href="#about">About</a>
-      <a href="#contact">Contact</a>
+      <a href="#home" class="navbar-links" data-section='home'>Home</a>
+      <a href="#customers" class="navbar-links" data-section='customers'>Customers</a>
+      <a href="#transactions" class="navbar-links" data-section='transactions'>Transactions</a>
+      <a href="#new-transaction" class="navbar-links" data-section='new-transaction'>New Transaction</a>
+      <a href="#about" class="navbar-links" data-section='about'>About</a>
+      <a href="#contact" class="navbar-links" data-section='contact'>Contact</a>
     </div>
   </nav>
   <header>
@@ -39,7 +39,20 @@
     </section>
   </header>
   <main class="container">
-    <section class="row" id="customers">
+
+    <section id="home" class="row data-section">
+      <div class="shortcut-link" data-block="customer">
+        <h2>See Our Customers</h2>
+      </div>
+      <div class="shortcut-link" data-block="transaction">
+        <h2>Transactions History</h2>
+      </div>
+      <div class="shortcut-link" data-block="new-transaction">
+        <h2>Make New Transaction</h2>
+      </div>
+    </section>
+
+    <section class="row data-section" id="customers">
       <h2>All Customers</h2>
       <table id="customer-table">
         <thead>
@@ -49,7 +62,7 @@
             <th>BALANCE</th>
           </tr>
         </thead>
-        <tbody id="customer-table-body">
+        <!--<tbody id="customer-table-body">
           <tr>
             <td>CADIT2110</td>
             <td>Aditya Yaduvanshi</td>
@@ -60,12 +73,12 @@
             <td>Ayush Yaduvanshi</td>
             <td>100</td>
           </tr>
-        </tbody>
+        </tbody>-->
       </table>
     </section>
-    <section class="row" id="transactions">
+    <section class="row data-section" id="transactions">
       <h2>Transaction History</h2>
-      <table id="transaction-table">
+      <table id="txn-table">
         <thead>
           <tr>
             <th>TXN ID</th>
@@ -75,7 +88,7 @@
             <th>TIME</th>
           </tr>
         </thead>
-        <tbody id="transaction-table-body">
+        <!--<tbody id="transaction-table-body">
           <tr>
             <td>TXN2783878</td>
             <td>Aditya Yaduvanshi</td>
@@ -90,11 +103,11 @@
             <td>Aditya Yaduvanshi</td>
             <td>8:31 PM</td>
           </tr>
-        </tbody>
+        </tbody>-->
       </table>
     </section>
 
-    <section id="new-transaction">
+    <section id="new-transaction" class="data-section">
       <h2>Let's Make New Transaction</h2>
       <div class="form-container">
         <form method="POST" action="server.php" id="transaction-form">
@@ -123,10 +136,10 @@
       </div>
     </section>
 
-    <section class="row" id="about">
+    <section class="row data-section" id="about">
       <h2>About This Site</h2>
     </section>
-    <section class="row" id="contact">
+    <section class="row data-section" id="contact">
       <h2>Contact To Build Network</h2>
     </section>
   </main>
