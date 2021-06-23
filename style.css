@@ -7,3 +7,7 @@ body {
   font: 16px 'Arial', sans-serif normal;
   color: rgba(20,20,20,0.8);
 }
+
+table {
+  border: 1px solid black;
+}
