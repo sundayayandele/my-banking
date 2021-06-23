@@ -8,7 +8,7 @@
   <link rel="shortcut icon" href="images/mybank-favicon-icon.png" type="image/png">
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body id="home">
   <nav>
     <div id="brand">
       <a href="index.html">
@@ -24,7 +24,7 @@
       </button>
     </div>
     <div class="navbar">
-      <a href="index.html">Home</a>
+      <a href="#home">Home</a>
       <a href="#customers">Customers</a>
       <a href="#transactions">Transactions</a>
       <a href="#new-transaction">New Transaction</a>
@@ -100,21 +100,21 @@
         <form method="POST" action="server.php" id="transaction-form">
           <h3 id="form-instruction">Fill Below Details To Continue</h3>
           <div data-field="sender" class="form-field">
-            <select name="sender" class="select-field">
+            <select name="sender" class="select-field" id="sender-field">
               <option value="null" selected>-----</option>
-              <option value="1">Aditya</option>
-              <option value="2">Ayush</option>
+              <option value="Aditya">Aditya</option>
+              <option value="Ayush">Ayush</option>
             </select>
           </div>
           <div data-field="reciever" class="form-field">
-            <select name="reciever" class="select-field">
+            <select name="reciever" class="select-field" id="reciever-field">
               <option value="null" selected>-----</option>
-              <option value="1">Aditya</option>
-              <option value="2">Ayush</option>
+              <option value="Aditya">Aditya</option>
+              <option value="Ayush">Ayush</option>
             </select>
           </div>
           <div data-field="amount" class="form-field">
-            <input type="number" min="1" name="amount">
+            <input type="number" min="1" name="amount" id="amount-field">
           </div>
           <div class="form-field">
             <input type="submit" id="btn-send" value="Send">
