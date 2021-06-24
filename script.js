@@ -41,7 +41,7 @@ function HandleBankingSection(section){
     GetTransactions()
   }
   else if(section === 'customers') {
-    console.log('it is customers')
+    GetCustomers()
   }
   else if(section === 'new-transaction'){
     console.log('it is new-transaction')
@@ -82,17 +82,13 @@ function CreateCustomerTable(){
   df.appendChild(tbody)
   customers.forEach(customer => {
     let customer_row = tbody.insertRow()
-    txn_id = customer_row.insertCell()
-    sender = customer_row.insertCell()
-    reciever = customer_row.insertCell()
-    amount = customer_row.insertCell()
-    txn_time = customer_row.insertCell()
+    c_id = customer_row.insertCell()
+    c_name = customer_row.insertCell()
+    acc_balance = customer_row.insertCell()
 
     c_id = customer.id
     c_name = customer.name
     c_gender = customer.gender
-    c_dob = customer.dob
-    c_email = customer.email
   });
 }
 
