@@ -1,23 +1,31 @@
 <?php 
-  $connect = mysqli_connect('localhost','root','','my_bank');
-  $response = array();
-  if($connect){
-    $selectAccount = 'SELECT * FROM Account';
-    
-    $resultAccount = mysqli_query($connect,$selectAccount);
-    if($resultAccount){
-      header('Content-Type: JSON');
-      $index = 0;
-      while($row = mysqli_fetch_assoc($resultAccount)){
-        $response[$index]['id'] = $row['id'];
-        $response[$index]['owner'] = $row['owner'];
-        $response[$index]['balance'] = $row['balance'];
-        $index++;
+
+  require_once __DIR__ .'/config.php';
+  class ACCOUNT {
+    function SelectAll(){
+      $db = new Connect();
+      $accounts = array();
+      $data = $db->prepare('SELECT * FROM account ORDER BY id');
+      $data->execute();
+      while($OutputData = $data->fetch(PDO::FETCH_ASSOC)){
+        $accounts[$OutputData['id']] = array(
+          'id'      => $OutputData['id'],
+          'owner'   => $OutputData['owner'],
+          'balance' => $OutputData['balance']
+        );
       }
-      echo json_encode($response,JSON_PRETTY_PRINT);
+      return json_encode($accounts,JSON_PRETTY_PRINT);
     }
   }
-  else {
-    echo json_encode('ERROR : FAILED TO CONNECT TO DATABASE');
+
+  header('Content-Type: application/json');
+
+  if($_SERVER['REQUEST_METHOD'] == 'GET'){
+    $ACCOUNT = new ACCOUNT;
+    echo $ACCOUNT->SelectAll();
   }
+  else {
+    echo json_encode('error: GET method is expected!',JSON_PRETTY_PRINT);
+  }
+
 ?>

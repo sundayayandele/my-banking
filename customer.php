@@ -1,25 +1,33 @@
 <?php 
-  $connect = mysqli_connect('localhost','root','','my_bank');
-  $response = array();
-  if($connect){
-    $selectCustomer = 'SELECT * FROM customer';
-    
-    $resultCustomer = mysqli_query($connect,$selectCustomer);
-    if($resultCustomer){
-      header('Content-Type: JSON');
-      $index = 0;
-      while($row = mysqli_fetch_assoc($resultCustomer)){
-        $response[$index]['id'] = $row['id'];
-        $response[$index]['name'] = $row['name'];
-        $response[$index]['email'] = $row['email'];
-        $response[$index]['gender'] = $row['gender'];
-        $response[$index]['dob'] = $row['dob'];
-        $index++;
+
+  require_once __DIR__ .'/config.php';
+  class CUSTOMER {
+    function SelectAll(){
+      $db = new Connect();
+      $customers = array();
+      $data = $db->prepare('SELECT * FROM customer ORDER BY id');
+      $data->execute();
+      while($OutputData = $data->fetch(PDO::FETCH_ASSOC)){
+        $customers[$OutputData['id']] = array(
+          'id'     => $OutputData['id'],
+          'name'   => $OutputData['name'],
+          'email'  => $OutputData['email'],
+          'gender' => $OutputData['gender'],
+          'dob'    => $OutputData['dob']
+        );
       }
-      echo json_encode($response,JSON_PRETTY_PRINT);
+      return json_encode($customers,JSON_PRETTY_PRINT);
     }
   }
-  else {
-    echo json_encode('ERROR : FAILED TO CONNECT TO DATABASE');
+
+  header('Content-Type: application/json');
+
+  if($_SERVER['REQUEST_METHOD'] == 'GET'){
+    $CUSTOMER = new CUSTOMER;
+    echo $CUSTOMER->SelectAll();
   }
+  else {
+    echo json_encode('error: GET method is expected!',JSON_PRETTY_PRINT);
+  }
+  
 ?>
