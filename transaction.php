@@ -1,25 +1,33 @@
 <?php 
-  $connect = mysqli_connect('localhost','root','','my_bank');
-  $response = array();
-  if($connect){
-    $selectTransaction = 'SELECT * FROM transaction';
-    
-    $resultTransaction = mysqli_query($connect,$selectTransaction);
-    if($resultTransaction){
-      header('Content-Type: JSON');
-      $index = 0;
-      while($row = mysqli_fetch_assoc($resultTransaction)){
-        $response[$index]['id'] = $row['id'];
-        $response[$index]['sender'] = $row['sender'];
-        $response[$index]['amount'] = $row['amount'];
-        $response[$index]['reciever'] = $row['reciever'];
-        $response[$index]['txn_time'] = $row['txn_time'];
-        $index++;
+
+  require_once __DIR__ .'/config.php';
+  class TRANSACTION {
+    function SelectAll(){
+      $db = new Connect();
+      $transactions = array();
+      $data = $db->prepare('SELECT * FROM transaction ORDER BY -txn_time');
+      $data->execute();
+      while($OutputData = $data->fetch(PDO::FETCH_ASSOC)){
+        $transactions[$OutputData['id']] = array(
+          'id'       => $OutputData['id'],
+          'sender'   => $OutputData['sender'],
+          'amount'   => $OutputData['amount'],
+          'reciever' => $OutputData['reciever'],
+          'txn_time' => $OutputData['txn_time']
+        );
       }
-      echo json_encode($response,JSON_PRETTY_PRINT);
+      return json_encode($transactions,JSON_PRETTY_PRINT);
     }
   }
-  else {
-    echo json_encode('ERROR : FAILED TO CONNECT TO DATABASE');
+
+  header('Content-Type: application/json');
+
+  if($_SERVER['REQUEST_METHOD'] == 'GET'){
+    $TRANSACTION = new TRANSACTION;
+    echo $TRANSACTION->SelectAll();
   }
+  else {
+    echo json_encode('error: GET method is expected!',JSON_PRETTY_PRINT);
+  }
+  
 ?>

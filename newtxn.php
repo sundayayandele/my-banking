@@ -1,29 +1,33 @@
 <?php 
+
+  require_once __DIR__ .'/config.php';
+  class NEXTXN {
+    function CreateTXN($sender,$reciever,$amount){
+      $db = new Connect();
+      $customers = array();
+      $data = $db->prepare('INSERT INTO transaction(`sender`,`amount`,`reciever`) VALUES('.$sender.','.$amount.','.$reciever.');');
+      $data->execute();
+      while($OutputData = $data->fetch(PDO::FETCH_ASSOC)){
+        $customers[$OutputData['id']] = array(
+          'id'     => $OutputData['id'],
+          'name'   => $OutputData['name'],
+          'email'  => $OutputData['email'],
+          'gender' => $OutputData['gender'],
+          'dob'    => $OutputData['dob']
+        );
+      }
+      return json_encode($customers,JSON_PRETTY_PRINT);
+    }
+  }
+
+  header('Content-Type: application/json');
+
   if($_SERVER['REQUEST_METHOD'] == 'POST'){
-    $connect = mysqli_connect('localhost','root','','my_bank');
-    $getSender = 'SELECT email FROM customer WHERE name = ' + $_POST['sender'];
-    $getReciever = 'SELECT email FROM customer WHERE name = ' + $_POST['reciever'];
-    if($getSender && $getReciever){
-      $getAmount = 'SELECT amount from account WHERE owner = ' + $getSender;
-      if($getAmount < $_POST['amount']){
-        echo json_encode('{error: Insufficient Account Balance!}');
-      }
-      else {
-        $newtxn = 'INSERT INTO `transaction`(`sender`, `reciever`, `amount`) VALUES (' + $getSender + ',' + $getReciever + ',' + $_POST['amount'] + ')';
-        $result = mysqli_query($connect,$newtxn);
-        if($result){
-          echo json_encode('{success: Transfered Successfully!}');
-        }
-        else {
-          echo json_encode('{error: Transaction Failed!}');
-        }
-      }
-    }
-    else {
-      echo json_encode("{error: Sender Or Reciever Didn't Exists}");
-    }
+    $NEXTXN = new NEXTXN;
+    echo $NEXTXN->CreateTXN($sender,$reciever,$amount);
   }
   else {
-    echo json_encode('{error: Invalid Request!}');
+    echo json_encode('error: POST method is expected!',JSON_PRETTY_PRINT);
   }
+
 ?>
