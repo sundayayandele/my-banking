@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     link.onclick = ()=>{
       // see line 27 for this function's details 
       HideAndShow(link.dataset.section)
-      if(link.dataset.section === 'transactions' || link.dataset.section === 'customers' || link.dataset.section === 'new-transaction'){
+      if(link.dataset.section === 'transactions' || link.dataset.section === 'customers' || link.dataset.section === 'new-transaction' || link.dataset.section === 'add-maoney'){
         // see 38 line for this function's details
         HandleBankingSection(link.dataset.section)
       }
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   // Default showing home view
   if(location.hash){
     // if reload than get hash and show that
-    if(location.hash.substr(1) === 'transactions' || location.hash.substr(1) === 'customers' || location.hash.substr(1) === 'new-transaction'){
+    if(location.hash.substr(1) === 'transactions' || location.hash.substr(1) === 'customers' || location.hash.substr(1) === 'new-transaction' || location.hash.substr(1) === 'add-money'){
       HandleBankingSection(location.hash.substr(1))
     }
     HideAndShow(location.hash.substr(1))
@@ -44,7 +44,10 @@ function HandleBankingSection(section){
     GetCustomers()
   }
   else if(section === 'new-transaction'){
-    console.log('it is new-transaction')
+    NewTransaction()
+  }
+  else if(section === 'add-money'){
+    AddMoney()
   }
 }
 
@@ -57,7 +60,7 @@ function NewTransaction(){
 }
 
 function GetCustomers(){
-  fetch('customer.php')
+  fetch('server.php')
   .then(response => response.json())
   .then(response => {
     return response
@@ -65,7 +68,7 @@ function GetCustomers(){
 }
 
 function GetAccounts(){
-  fetch('account.php')
+  fetch('server.php')
   .then(response => response.json())
   .then(response => {
     return response
@@ -94,7 +97,7 @@ function CreateCustomerTable(){
 
 function GetTransactions(){
   let txn_id,sender,reciever,amount,txn_time
-  fetch('transaction.php')
+  fetch('server.php')
   .then(response => response.json())
   .then(response => {
     let df = new DocumentFragment()
@@ -120,7 +123,7 @@ function GetTransactions(){
 }
 
 function Transfer(sender,reciever,amount){
-  fetch('newtxn.php', {
+  fetch('server.php', {
     method: 'POST',
     body: JSON.stringify({
       sender: sender,
@@ -131,5 +134,26 @@ function Transfer(sender,reciever,amount){
   .then(response => response.json())
   .then(response => {
     console.log(response);
+  })
+}
+
+function AddMoney(){
+  let owner,amount
+  owner = document.querySelector('#owner-field').value
+  amount = document.querySelector('#amount-request-field').value
+  return RequestMoney(id,owner,amount)
+}
+
+function RequestMoney(owner,amount){
+  fetch('server.php?action=account', {
+    method: 'PUT',
+    body: JSON.stringify({
+      owner: owner,
+      amount: amount
+    })
+  })
+  .then(response => response.json())
+  .then(result => {
+    console.log(result)
   })
 }

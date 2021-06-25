@@ -9,6 +9,11 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <noscript>
+    <div>
+      You need to enable JavaScript in your browser settings to use this site.
+    </div>
+  </noscript>
   <nav>
     <div id="brand">
       <a href="index.html">
@@ -110,7 +115,7 @@
     <section id="new-transaction" class="data-section">
       <h2>Let's Make New Transaction</h2>
       <div class="form-container">
-        <form method="POST" action="server.php" id="transaction-form">
+        <form method="POST" id="transaction-form">
           <h3 id="form-instruction">Fill Below Details To Continue</h3>
           <div data-field="sender" class="form-field">
             <select name="sender" class="select-field" id="sender-field">
