@@ -60,7 +60,7 @@ function NewTransaction(){
 }
 
 function GetCustomers(){
-  fetch('server.php')
+  fetch('customer.php?all=1')
   .then(response => response.json())
   .then(response => {
     return response
@@ -68,7 +68,7 @@ function GetCustomers(){
 }
 
 function GetAccounts(){
-  fetch('server.php')
+  fetch('account.php?all=1')
   .then(response => response.json())
   .then(response => {
     return response
@@ -97,7 +97,7 @@ function CreateCustomerTable(){
 
 function GetTransactions(){
   let txn_id,sender,reciever,amount,txn_time
-  fetch('server.php')
+  fetch('transaction.php?all=1')
   .then(response => response.json())
   .then(response => {
     let df = new DocumentFragment()
@@ -123,7 +123,7 @@ function GetTransactions(){
 }
 
 function Transfer(sender,reciever,amount){
-  fetch('server.php', {
+  fetch('transaction.php', {
     method: 'POST',
     body: JSON.stringify({
       sender: sender,
@@ -145,7 +145,7 @@ function AddMoney(){
 }
 
 function RequestMoney(owner,amount){
-  fetch('server.php?action=account', {
+  fetch('account.php', {
     method: 'PUT',
     body: JSON.stringify({
       owner: owner,
