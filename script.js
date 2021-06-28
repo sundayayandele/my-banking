@@ -52,59 +52,71 @@ function HandleBankingSection(section){
 }
 
 function NewTransaction(){
-  let sender,reciever,amount
-  sender = document.querySelector('#sender-field').value
-  reciever = document.querySelector('#reciever-field').value
-  amount = document.querySelector('#amount-field').value
-  return Transfer(sender,reciever,amount)
+  
+  fetch('customer.php?for=newtxn')
+  .then(response => response.json())
+  .then(result => {
+    //
+  })
 }
 
 function GetCustomers(){
   fetch('customer.php?all=1')
   .then(response => response.json())
-  .then(response => {
-    return response
+  .then(customers => {
+    CreateCustomerTable(customers)
   })
 }
 
 function GetAccounts(){
   fetch('account.php?all=1')
   .then(response => response.json())
-  .then(response => {
-    return response
+  .then(accounts => {
+    return accounts
   })
 }
 
-function CreateCustomerTable(){
-  const customers = GetCustomers(),
-  accounts = GetAccounts()
-  let c_id,c_name,acc_balance
+function CreateCustomerTable(customers){
+  let tbody = document.querySelector('#customer-table-body')
+  let c_id,c_name,c_email,acc_id,acc_balance
   let df = new DocumentFragment()
-  let tbody = document.createElement('tbody')
-  tbody.id = 'customer-table-body'
+  tbody.innerHTML = ''
   df.appendChild(tbody)
-  customers.forEach(customer => {
+  for(let customer in customers) {
     let customer_row = tbody.insertRow()
+    customer_row.className = 'customer-row'
+
     c_id = customer_row.insertCell()
-    c_name = customer_row.insertCell()
+    c_name = customer_row.insertCell() 
+    c_email = customer_row.insertCell()
+    acc_id = customer_row.insertCell()
     acc_balance = customer_row.insertCell()
 
-    c_id = customer.id
-    c_name = customer.name
-    c_gender = customer.gender
-  });
+    c_id.className = 'customer-cell c-id'
+    c_name.className = 'customer-cell c-name'
+    c_email.className = 'customer-cell c-email'
+    acc_id.className = 'customer-cell c-acc-id'
+    acc_balance.className = 'customer-cell c-acc-bal'
+
+    c_id.innerText = customers[customer]['c_id']
+    c_name.innerText = customers[customer]['name']
+    c_email.innerText = customers[customer]['email']
+    acc_id.innerText = customers[customer]['acc_id']
+    acc_balance.innerText = customers[customer]['balance']
+  }
+  document.querySelector('#customer-table').appendChild(df)
 }
 
 function GetTransactions(){
+  let tbody = document.querySelector('#txn-table-body')
   let txn_id,sender,reciever,amount,txn_time
+  let df = new DocumentFragment()
+  tbody.innerHTML = ''
+  df.appendChild(tbody)
   fetch('transaction.php?all=1')
   .then(response => response.json())
-  .then(response => {
-    let df = new DocumentFragment()
-    let tbody = document.createElement('tbody')
-    tbody.id = 'txn-table-body'
-    df.appendChild(tbody)
-    response.forEach(txn => {
+  .then(result => {
+    for(let txn in result) {
       let txn_row = tbody.insertRow()
       txn_id = txn_row.insertCell()
       sender = txn_row.insertCell()
@@ -112,17 +124,21 @@ function GetTransactions(){
       amount = txn_row.insertCell()
       txn_time = txn_row.insertCell()
 
-      txn_id.innerText = txn.id
-      sender.innerText = txn.sender
-      reciever.innerText = txn.reciever
-      amount.innerText = txn.amount
-      txn_time.innerText = txn.txn_time
-    })
+      txn_id.innerText = result[txn]['id']
+      sender.innerText = result[txn]['sender']
+      reciever.innerText = result[txn]['reciever']
+      amount.innerText = result[txn]['amount']
+      txn_time.innerText = result[txn]['txn_time']
+    }
     document.querySelector('#txn-table').appendChild(df)
   })
 }
 
-function Transfer(sender,reciever,amount){
+function Transfer(){
+  let sender,reciever,amount
+  sender = document.querySelector('#sender-field').value
+  reciever = document.querySelector('#reciever-field').value
+  amount = document.querySelector('#amount-field').value
   fetch('transaction.php', {
     method: 'POST',
     body: JSON.stringify({

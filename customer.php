@@ -10,11 +10,11 @@
 
     function Select($email=NULL,$all=0){
       $customers = array();
-      if(isset($email)){
+      if(isset($email) && $all == 0){
         $data = $this->db->prepare('SELECT * FROM customer WHERE `email`= ?');
         $data->bindParam(1,$email);
       }
-      else if($all == 1){
+      else if($all == 1 && !isset($email)){
         $data = $this->db->prepare('SELECT * FROM customer ORDER BY id');
       }
       $data->execute();
@@ -47,18 +47,41 @@
       return $customer;
     }
 
+    function Cus_With_Acc($email=NULL,$all=0){
+      $customers = array();
+      if(isset($email) && $all == 0){
+        $data = $this->db->prepare('SELECT customer.id AS c_id, name, email, account.id AS acc_id, balance FROM `customer` LEFT JOIN `account` ON customer.email=account.owner WHERE customer.email=?');
+        $data->bindParam(1,$email);
+      }
+      else if($all == 1 && !isset($email)){
+        $data = $this->db->prepare('SELECT customer.id AS c_id, name, email, account.id AS acc_id, balance FROM `customer` LEFT JOIN `account` ON customer.email=account.owner ORDER BY customer.id');
+      }
+      $data->execute();
+      while($OutputData = $data->fetch(PDO::FETCH_ASSOC)){
+        $customers[$OutputData['c_id']] = array(
+          'c_id'    => $OutputData['c_id'],
+          'name'    => $OutputData['name'],
+          'email'   => $OutputData['email'],
+          'acc_id'  => $OutputData['acc_id'],
+          'balance' => $OutputData['balance']
+        );
+      }
+      return $customers;
+    }
+
     function Initiate($data){
       $SERVER = new SERVER;
       $CUSTOMER = new CUSTOMER;
+      $ACCOUNT = new ACCOUNT;
       if($_SERVER['REQUEST_METHOD'] == 'GET'){
         if(isset($_GET['email']) && !empty($_GET['email'])){
-          $response = $CUSTOMER->Select($_GET['email'],0);
+          $response = $CUSTOMER->Cus_With_Acc($_GET['email'],0);
           if(empty($response)){
             $response = $SERVER->ErrorMsg('Results Not Found!');
           }
         }
-        else if(isset($_GET['all']) && $_GET['all']==1){
-          $response = $CUSTOMER->Select(NULL,1);
+        else if(isset($_GET['all']) && $_GET['all']==1 && !isset($_GET['email'])){
+          $response = $CUSTOMER->Cus_With_Acc(NULL,1);
           if(empty($response)){
             $response = $SERVER->ErrorMsg('Results Not Found!');
           }
