@@ -23,6 +23,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
     // if not any hash than it is home
     HideAndShow('home')
   }
+
+  document.querySelector('#customer-form').addEventListener('submit', NewCustomer);
 })
 
 // function to hide sections and display only specific one
@@ -51,9 +53,30 @@ function HandleBankingSection(section){
   }
 }
 
+function NewCustomer(){
+  let c_name,c_gender,c_dob,c_email
+  c_name = document.querySelector('#new_c_name').value
+  c_gender = document.querySelector('#new_c_gender').value
+  c_dob = document.querySelector('#new_c_dob').value
+  c_email = document.querySelector('#new_c_name').value
+  fetch('customer.php', {
+    method: 'POST',
+    body: JSON.stringify({
+      name: c_name,
+      gender: c_gender,
+      dob: c_dob,
+      email: c_email
+    })
+  }).then(response => response.json())
+  .then(result => {
+    console.log(result)
+    alert(result.message)
+  })
+}
+
 function NewTransaction(){
   
-  fetch('customer.php?for=newtxn')
+  fetch('customer.php?all=1&names=1&accs=1')
   .then(response => response.json())
   .then(result => {
     //
